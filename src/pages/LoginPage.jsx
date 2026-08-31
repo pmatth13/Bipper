@@ -1,39 +1,34 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 
-export default function AuthPage() {
+export default function LoginPage({ onGoToSignUp }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
+
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit() {
+  async function handleLogin() {
     setError(null);
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
-      options: { data: { username } },
     });
 
     setLoading(false);
 
-    if (error) setError(error.message);
-    else console.log("Compte créé", data);
+    if (error) {
+      setError(error.message);
+    } else {
+      console.log("Connecté", data);
+    }
   }
 
   return (
     <div>
-      <h1>Inscription</h1>
-
-      <input
-        type="text"
-        placeholder="Nom d'utilisateur"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
+      <h1>Connexion</h1>
 
       <input
         type="email"
@@ -49,11 +44,13 @@ export default function AuthPage() {
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button onClick={handleSubmit} disabled={loading}>
-        {loading ? "Création..." : "S'inscrire"}
+      <button onClick={handleLogin} disabled={loading}>
+        Se connecter
       </button>
 
       {error && <p>{error}</p>}
+
+      <button onClick={onGoToSignUp}>Pas de compte ? S'inscrire</button>
     </div>
   );
 }
