@@ -20,11 +20,24 @@ export default function App() {
     return () => data.subscription.unsubscribe();
   }, []);
 
+  async function handleSignOut() {
+    // Gere la deconnexion
+    await supabase.auth.signOut();
+  }
+
   // En attente de réponses ..
   if (checking) return <p>Chargement...</p>;
 
   // Connecté
-  if (user) return <p>Connecté en tant que {user.email}</p>;
+  if (user) {
+    return (
+      <div>
+        <p>Connecté en tant que {user.email}</p>
+        <button onClick={handleSignOut}>Se déconnecter</button>
+        {/*--- Deconnexion ---*/}
+      </div>
+    );
+  }
 
   // Pas connecté alors inscription ou connexion
   if (page === "login") {
