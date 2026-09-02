@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 
-// Reçue depuis App.jsx => Affichage de la page de connexion
+// Reçue depuis App.jsx => Affichage de la page de connexion grâce à la Props onGoToLogin
 export default function SignUpPage({ onGoToLogin }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -60,7 +60,7 @@ export default function SignUpPage({ onGoToLogin }) {
 
       {/* disabled={loading} empêche de cliquer pendant la requête */}
       <button onClick={handleSignUp} disabled={loading}>
-        S'inscrire
+        {loading ? "Création..." : "S'inscrire"}
       </button>
 
       {/* Affiche le paragraphe seulement si error contient un message */}

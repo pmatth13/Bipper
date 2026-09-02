@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "../lib/supabase";
 
 export default function LoginPage({ onGoToSignUp }) {
+  //Le miroir de SignUpPage
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,6 +14,7 @@ export default function LoginPage({ onGoToSignUp }) {
     setLoading(true);
 
     const { data, error } = await supabase.auth.signInWithPassword({
+      //Plus simple il faut juste recuperer les donnees sur Supabase
       email,
       password,
     });

@@ -1,16 +1,84 @@
-# React + Vite
+# Bipper
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Clone de Twitter/X. Projet-passerelle 3, formation Rocket.
 
-Currently, two official plugins are available:
+React + Vite, Tailwind, Supabase (Postgres + Auth), déployé sur Vercel.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Architecture
 
-## React Compiler
+Pas de back-end.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```
+React ──[@supabase/supabase-js, clé anon]──> Supabase
+                                              ├── Auth (auth.users)
+                                              └── Postgres (RLS)
+```
 
-## Expanding the ESLint configuration
+### Base
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```
+auth.users ──(même id)──> profiles ──> tweets ──(parent_id)──> tweets
+                              └──────> follows
+```
+
+- `profiles` : username, bio. Créée par un trigger au signup.
+- `tweets` : tweets et réponses dans la même table. `parent_id` vide = racine.
+- `follows` : `follower_id` suit `following_id`. Clé primaire composée.
+
+Schéma complet dans `supabase/schema.sql`.
+
+Le username transite par `options: { data: { username } }` au signup,
+le trigger le récupère dans `raw_user_meta_data`.
+
+### Dossiers
+
+```
+src/
+  pages/       SignUpPage, LoginPage
+  components/
+  lib/supabase.js
+supabase/schema.sql
+```
+
+## Setup
+
+```bash
+npm install
+```
+
+`.env.local` à la racine :
+
+```
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+```
+
+(Settings → API dans Supabase. Le préfixe VITE\_ est obligatoire.)
+
+```bash
+npm run dev
+```
+
+## Périmètre
+
+Les 8 features de l'énoncé : inscription, connexion, déconnexion, créer
+un tweet, supprimer un tweet, répondre, s'abonner, timeline, profils.
+
+Pas de likes, retweets, hashtags, mentions, DM, recherche, édition.
+Avatars = cercle coloré avec l'initiale, pas d'upload.
+
+## Avancement
+
+- [x] Schéma + RLS
+- [x] Trigger création profil
+- [x] Client Supabase
+- [x] Inscription / connexion
+- [ ] Session persistante
+- [ ] Déconnexion
+- [ ] Router
+- [ ] Tweets (créer / afficher / supprimer)
+- [ ] Réponses
+- [ ] Abonnements
+- [ ] Profils
+- [ ] Design
+- [ ] Déploiement
