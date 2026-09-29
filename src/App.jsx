@@ -1,9 +1,14 @@
 import { supabase } from "./lib/supabase";
-import { useState } from "react";
 import { BoutonBip } from "./exercices/BoutonBip";
+import { ChampsTexte } from "./exercices/ChampsTexte";
 
 function App() {
-  return <BoutonBip />;
+  return (
+    <>
+      <BoutonBip />
+      <ChampsTexte />
+    </>
+  );
 }
 
 export default App;
