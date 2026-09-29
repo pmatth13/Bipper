@@ -1,8 +1,9 @@
 import { supabase } from "./lib/supabase";
+import { useState } from "react";
+import { BoutonBip } from "./exercices/BoutonBip";
 
 function App() {
-  console.log(supabase);
-  return <h1 className="text-red-500">Hello world</h1>;
+  return <BoutonBip />;
 }
 
 export default App;
