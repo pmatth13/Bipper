@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const LIMITE = 280;
 
-export function BipForm() {
+export function BipForm({ onBip }) {
   const [texte, setTexte] = useState("");
   const tropLong = texte.length > LIMITE;
   const vide = texte.trim().length === 0;
@@ -11,7 +11,7 @@ export function BipForm() {
   function handleSubmit(e) {
     e.preventDefault();
     if (tropLong || vide) return;
-    console.log(texte);
+    onBip(texte);
     setTexte("");
   }
 
