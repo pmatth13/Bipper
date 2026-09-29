@@ -1,12 +1,10 @@
 import { supabase } from "./lib/supabase";
-import { BoutonBip } from "./exercices/BoutonBip";
-import { ChampsTexte } from "./exercices/ChampsTexte";
+import { BipForm } from "./components/BipForm";
 
 function App() {
   return (
     <>
-      <BoutonBip />
-      <ChampsTexte />
+      <BipForm />
     </>
   );
 }
