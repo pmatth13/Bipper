@@ -100,18 +100,25 @@ using (auth.uid() = follower_id);
 -- 4. CRÉATION AUTOMATIQUE DU PROFIL
 -- À l'inscription, Supabase crée la ligne dans auth.users.
 -- Ce trigger crée la ligne correspondante dans profiles.
--- Le username doit être passé en métadonnée au signUp :
+-- Le username peut être passé en métadonnée au signUp :
 --   supabase.auth.signUp({ email, password,
 --     options: { data: { username } } })
+-- Sans username, on prend la partie de l'e-mail avant le @.
 
-create function public.handle_new_user()
+create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
 security definer set search_path = ''
 as $$
 begin
   insert into public.profiles (id, username)
-  values (new.id, new.raw_user_meta_data ->> 'username');
+  values (
+    new.id,
+    coalesce(
+      nullif(new.raw_user_meta_data ->> 'username', ''),
+      split_part(new.email, '@', 1)
+    )
+  );
   return new;
 end;
 $$;
