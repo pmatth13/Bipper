@@ -2,6 +2,7 @@ import { supabase } from "./lib/supabase";
 import { BipForm } from "./components/BipForm";
 import { Bip } from "./components/Bip";
 import { useState } from "react";
+import { Chrono } from "./exercices/Chrono";
 
 function App() {
   const [bips, setBips] = useState([]);
@@ -17,6 +18,7 @@ function App() {
   }
   return (
     <>
+      <Chrono />
       <BipForm onBip={handleBip} />
       <div className="flex flex-col gap-3">
         {bips.length === 0 ? (
