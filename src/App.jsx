@@ -4,21 +4,35 @@ import { Bip } from "./components/Bip";
 import { useState } from "react";
 
 function App() {
-  const [dernierBip, setDernierBip] = useState(null);
+  const [bips, setBips] = useState([]);
   //Permet de recevoir le texte de BipForm
   function handleBip(texte) {
-    setDernierBip(texte);
+    const bip = { id: Date.now(), auteur: "PM", texte: texte };
+    setBips([bip, ...bips]);
   }
   //Permet de supprimer un bip
-  function handleDelete() {
-    setDernierBip(null);
+  function handleDelete(id) {
+    const aGarder = bips.filter((bip) => bip.id !== id);
+    setBips(aGarder);
   }
   return (
     <>
       <BipForm onBip={handleBip} />
-      {dernierBip ? (
-        <Bip auteur="PM" texte={dernierBip} id={1} onDelete={handleDelete} />
-      ) : null}
+      <div className="flex flex-col gap-3">
+        {bips.length === 0 ? (
+          <p className="text-center text-gray-500">Aucun bip pour le moment</p>
+        ) : (
+          bips.map((bip) => (
+            <Bip
+              key={bip.id}
+              auteur={bip.auteur}
+              id={bip.id}
+              texte={bip.texte}
+              onDelete={handleDelete}
+            />
+          ))
+        )}
+      </div>
     </>
   );
 }
