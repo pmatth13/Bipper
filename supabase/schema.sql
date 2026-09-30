@@ -126,3 +126,12 @@ $$;
 create trigger on_auth_user_created
 after insert on auth.users
 for each row execute function public.handle_new_user();
+
+-- 5. INDEX
+-- Accélèrent les requêtes fréquentes :
+-- les tweets d'un auteur triés par date, les réponses d'un tweet,
+-- et les abonnés d'un compte.
+
+create index tweets_author_created_idx on tweets (author_id, created_at desc);
+create index tweets_parent_idx on tweets (parent_id);
+create index follows_following_idx on follows (following_id);
