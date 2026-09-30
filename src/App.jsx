@@ -1,6 +1,6 @@
 import { supabase } from "./lib/supabase";
 import { BipForm } from "./components/BipForm";
-import { Bip } from "./components/Bip";
+import { BipList } from "./components/BipList";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -47,23 +47,7 @@ function App() {
   return (
     <>
       <BipForm onBip={handleBip} />
-      <div className="flex flex-col gap-3">
-        {loading ? (
-          <p className="text-center text-gray-500">Chargement ...</p>
-        ) : bips.length === 0 ? (
-          <p className="text-center text-gray-500">Aucun bip pour le moment</p>
-        ) : (
-          bips.map((bip) => (
-            <Bip
-              key={bip.id}
-              auteur={bip.auteur}
-              id={bip.id}
-              texte={bip.texte}
-              onDelete={handleDelete}
-            />
-          ))
-        )}
-      </div>
+      <BipList onDelete={handleDelete} loading={loading} bips={bips} />
     </>
   );
 }
