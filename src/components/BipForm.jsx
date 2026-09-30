@@ -9,7 +9,7 @@ export function BipForm({ onBip }) {
 
   //Fonction pour soumettre le Bip
   function handleSubmit(e) {
-    e.preventDefault(); //Empeche le navigateur de recharger la page par defau
+    e.preventDefault(); //Empeche le navigateur de recharger la page par defaut
     if (tropLong || vide) return;
     onBip(texte);
     setTexte("");

@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [bips, setBips] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  //Permet d'actualiser les bips avec la database
   useEffect(() => {
     async function chargerBips() {
       const { data, error } = await supabase
@@ -13,6 +15,8 @@ function App() {
         .select("id, content, created_at, profiles(username)")
         .is("parent_id", null)
         .order("created_at", { ascending: false });
+
+      setLoading(false);
 
       if (error) {
         console.error(error);
@@ -26,6 +30,7 @@ function App() {
       }));
       setBips(bipCharges);
     }
+
     chargerBips();
   }, []);
 
@@ -43,7 +48,9 @@ function App() {
     <>
       <BipForm onBip={handleBip} />
       <div className="flex flex-col gap-3">
-        {bips.length === 0 ? (
+        {loading ? (
+          <p className="text-center text-gray-500">Chargement ...</p>
+        ) : bips.length === 0 ? (
           <p className="text-center text-gray-500">Aucun bip pour le moment</p>
         ) : (
           bips.map((bip) => (
