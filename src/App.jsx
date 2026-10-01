@@ -1,6 +1,8 @@
 import { supabase } from "./lib/supabase";
 import { BipForm } from "./components/BipForm";
 import { BipList } from "./components/BipList";
+import { LoginForm } from "./components/LoginForm";
+import { SignUpForm } from "./components/SignUpForm";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -8,6 +10,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
   const [sessionLoading, setSessionLoading] = useState(true);
+  const [showSignUp, setShowSignUp] = useState(false);
 
   //Permet de verifier si session active, ecoute et nettoyage
   useEffect(() => {
@@ -27,6 +30,7 @@ function App() {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       console.log(event);
+      if (event === "SIGNED_OUT") setShowSignUp(false);
     });
     //Se désabonner (Couper l écoute)
     return () => data.subscription.unsubscribe();
@@ -59,17 +63,7 @@ function App() {
     chargerBips();
   }, []);
 
-  //Gere la connexion
-  async function handleLogin() {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: "...",
-      password: "...",
-    });
-    if (error) {
-      console.error(error.message);
-    }
-  }
-  //Gere la deconnexion
+  //Gere la deconnexion (la connexion est gere dans le composant LoginForm)
   async function handleLogOut() {
     const { error } = await supabase.auth.signOut();
 
@@ -94,16 +88,10 @@ function App() {
     return <p>Verification de la session...</p>;
   }
   if (!session) {
-    return (
-      <div className="flex flex-col items-start gap-3">
-        <p>Non connecté</p>
-        <button
-          onClick={handleLogin}
-          className="rounded-full bg-sky-500 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-600"
-        >
-          Se connecter en pm
-        </button>
-      </div>
+    return showSignUp ? (
+      <SignUpForm onGoToLoginForm={() => setShowSignUp(false)} />
+    ) : (
+      <LoginForm onGoToSignUpForm={() => setShowSignUp(true)} />
     );
   }
   return (
