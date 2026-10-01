@@ -1,17 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const LIMITE = 280;
 
 export function BipForm({ onBip }) {
   const [texte, setTexte] = useState("");
+  const [confirmation, setConfirmation] = useState("");
   const tropLong = texte.length > LIMITE;
   const vide = texte.trim().length === 0;
+
+  useEffect(() => {
+    if (!confirmation) {
+      return;
+    }
+    const id = setTimeout(() => setConfirmation(""), 3000);
+    return () => {
+      clearTimeout(id);
+      console.log("Clean Up");
+    };
+  }, [confirmation]);
 
   //Fonction pour soumettre le Bip
   function handleSubmit(e) {
     e.preventDefault(); //Empeche le navigateur de recharger la page par defaut
     if (tropLong || vide) return;
     onBip(texte);
+    setConfirmation("Bip publié !");
     setTexte("");
   }
 
@@ -30,6 +43,9 @@ export function BipForm({ onBip }) {
         <p className={`text-sm ${tropLong ? "text-red-500" : "text-gray-400"}`}>
           {texte.length} / {LIMITE}
         </p>
+        {confirmation && (
+          <p className="text-sm text-green-600">{confirmation}</p>
+        )}
         <button
           type="submit"
           disabled={tropLong || vide}
