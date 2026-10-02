@@ -4,8 +4,9 @@ import { BipList } from "./components/BipList";
 import { LoginForm } from "./components/LoginForm";
 import { SignUpForm } from "./components/SignUpForm";
 import { useEffect, useState } from "react";
+import { NotesAsync } from "./exercices/NotesAsync";
 
-function App() {
+export function App() {
   const [bips, setBips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
@@ -104,11 +105,10 @@ function App() {
         >
           Se déconnecter
         </button>
+        <NotesAsync />
       </div>
       <BipForm onBip={handleBip} />
       <BipList onDelete={handleDelete} loading={loading} bips={bips} />
     </>
   );
 }
-
-export default App;
