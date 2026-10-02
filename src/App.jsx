@@ -41,7 +41,7 @@ export function App() {
     async function chargerBips() {
       const { data, error } = await supabase
         .from("tweets")
-        .select("id, content, created_at, profiles(username)")
+        .select("id, content, created_at, author_id, profiles(username)")
         .is("parent_id", null)
         .order("created_at", { ascending: false });
 
@@ -56,7 +56,10 @@ export function App() {
         id: bip.id,
         auteur: bip.profiles.username,
         texte: bip.content,
+        authorId: bip.author_id,
       }));
+
+      console.log(bipCharges);
       setBips(bipCharges);
     }
 
@@ -78,6 +81,7 @@ export function App() {
       id: bip.id,
       auteur: bip.profiles.username,
       texte: bip.content,
+      authorId: bip.author_id,
     };
     setBips((prev) => [newBip, ...prev]);
   }

@@ -32,7 +32,7 @@ export function BipForm({ onBip, userId }) {
     const { data, error } = await supabase
       .from("tweets")
       .insert({ content: texte, author_id: userId })
-      .select("id, content, created_at, profiles(username)")
+      .select("id, content, created_at, author_id, profiles(username)")
       .single();
 
     setSending(false);
