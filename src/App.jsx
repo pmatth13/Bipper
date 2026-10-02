@@ -4,7 +4,6 @@ import { BipList } from "./components/BipList";
 import { LoginForm } from "./components/LoginForm";
 import { SignUpForm } from "./components/SignUpForm";
 import { useEffect, useState } from "react";
-import { NotesAsync } from "./exercices/NotesAsync";
 
 export function App() {
   const [bips, setBips] = useState([]);
@@ -73,10 +72,14 @@ export function App() {
     }
   }
 
-  //Permet de recevoir le texte de BipForm
-  function handleBip(texte) {
-    const bip = { id: Date.now(), auteur: "PM", texte: texte };
-    setBips([bip, ...bips]);
+  //Permet de recevoir un Bip confirmé par la BDD
+  function handleBip(bip) {
+    const newBip = {
+      id: bip.id,
+      auteur: bip.profiles.username,
+      texte: bip.content,
+    };
+    setBips((prev) => [newBip, ...prev]);
   }
   //Permet de supprimer un bip
   function handleDelete(id) {
@@ -105,9 +108,8 @@ export function App() {
         >
           Se déconnecter
         </button>
-        <NotesAsync />
       </div>
-      <BipForm onBip={handleBip} />
+      <BipForm onBip={handleBip} userId={session.user.id} />
       <BipList onDelete={handleDelete} loading={loading} bips={bips} />
     </>
   );

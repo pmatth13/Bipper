@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 
 const LIMITE = 280;
 
-export function BipForm({ onBip }) {
+export function BipForm({ onBip, userId }) {
   const [texte, setTexte] = useState("");
   const [confirmation, setConfirmation] = useState("");
+  const [sending, setSending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const tropLong = texte.length > LIMITE;
   const vide = texte.trim().length === 0;
 
@@ -20,10 +23,25 @@ export function BipForm({ onBip }) {
   }, [confirmation]);
 
   //Fonction pour soumettre le Bip
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault(); //Empeche le navigateur de recharger la page par defaut
     if (tropLong || vide) return;
-    onBip(texte);
+    setErrorMessage("");
+    setSending(true);
+
+    const { data, error } = await supabase
+      .from("tweets")
+      .insert({ content: texte, author_id: userId })
+      .select("id, content, created_at, profiles(username)")
+      .single();
+
+    setSending(false);
+    if (error) {
+      console.error(error.message);
+      setErrorMessage("Le bip n'a pas pu être publié");
+      return;
+    }
+    onBip(data);
     setConfirmation("Bip publié !");
     setTexte("");
   }
@@ -48,11 +66,12 @@ export function BipForm({ onBip }) {
         )}
         <button
           type="submit"
-          disabled={tropLong || vide}
+          disabled={tropLong || vide || sending}
           className="px-5 py-2 rounded-full bg-sky-500 text-white font-bold hover:bg-sky-600 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Bipper
+          {sending ? "Publication" : "Bipper"}
         </button>
+        {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}
       </div>
     </form>
   );
