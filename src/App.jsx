@@ -86,6 +86,7 @@ export function App() {
   }
   //Permet de supprimer un bip
   async function handleDelete(id) {
+    if (!window.confirm("Voulez-vous supprimer le bip ?")) return;
     const { data, error } = await supabase
       .from("tweets")
       .delete()
