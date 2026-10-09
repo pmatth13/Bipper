@@ -59,7 +59,6 @@ export function App() {
         authorId: bip.author_id,
       }));
 
-      console.log(bipCharges);
       setBips(bipCharges);
     }
 
@@ -86,9 +85,22 @@ export function App() {
     setBips((prev) => [newBip, ...prev]);
   }
   //Permet de supprimer un bip
-  function handleDelete(id) {
-    const aGarder = bips.filter((bip) => bip.id !== id);
-    setBips(aGarder);
+  async function handleDelete(id) {
+    const { data, error } = await supabase
+      .from("tweets")
+      .delete()
+      .eq("id", id)
+      .select("id");
+
+    if (error) {
+      console.error(error.message);
+      return;
+    }
+    if (data.length === 0) {
+      console.error("aucun bip supprimé");
+      return;
+    }
+    setBips((prev) => prev.filter((bip) => bip.id !== id));
   }
 
   //Les return conditionnels
@@ -114,7 +126,12 @@ export function App() {
         </button>
       </div>
       <BipForm onBip={handleBip} userId={session.user.id} />
-      <BipList onDelete={handleDelete} loading={loading} bips={bips} />
+      <BipList
+        onDelete={handleDelete}
+        loading={loading}
+        bips={bips}
+        userId={session.user.id}
+      />
     </>
   );
 }

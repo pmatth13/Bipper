@@ -1,6 +1,6 @@
 import { Bip } from "./Bip";
 
-export function BipList({ bips, loading, onDelete }) {
+export function BipList({ bips, loading, onDelete, userId }) {
   if (loading) {
     return <p className="text-center text-gray-500">Chargement...</p>;
   }
@@ -18,6 +18,8 @@ export function BipList({ bips, loading, onDelete }) {
           id={bip.id}
           texte={bip.texte}
           onDelete={onDelete}
+          userId={userId}
+          authorId={bip.authorId}
         />
       ))}
     </div>
